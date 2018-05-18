@@ -14,10 +14,16 @@ Currently, this bot parses all messages for emoji shortnames and returns the app
 <dolan> :D
 ```
 
+To have emojiirc repeat a line, replacing the shortnames with emojis, do .emoji <your text here>
+```
+<bob> .emoji peace br0 :v:
+<emojiirc> peace br0 ✌️
+```
+
 The emoji list in `emoji.ml` follows the [Unicode 10.0.0](http://unicode.org/versions/Unicode10.0.0/) specification, supporting 2666 emoji.
 
 ## To Do
  - make functions more efficient
  - add more functionality
-   - returns message but with all shortnames converted into emoji, retaining the structure otherwise
    - prevent bot from being spammed
+   - read password from file

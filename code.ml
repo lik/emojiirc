@@ -8,7 +8,7 @@ let port = ref 6667
 let nick = ref "emojiirc"
 let realname = ref "🦆"
 let channel = ref "#homescreen"
-let message = "🤣🤣🤣"
+let message = "🤣🤣🤣 @ joe_dirt"
 let bot_message = "Reporting in! [OCaml] | For commands, do .commands"
 let commands_message = "emojiirc responds to emoji shortnames, e.g. :duck:. To have emojiirc repeat a line, replacing the shortnames with emojis, do .emoji <your text here>"
 
