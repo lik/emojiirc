@@ -6,8 +6,9 @@ module M = Irc_message
 let host = ref "irc.rizon.net"
 let port = ref 6667
 let nick = ref "emojiirc"
+let realname = ref "🦆"
 let channel = ref "#homescreen"
-let message = "🦆✿🦆✿🦆✿🦆✿🦆✿"
+let message = "🤣🤣🤣"
 
 let string_list_to_string string_list =
   Printf.sprintf "[%s]" (String.concat "; " string_list)
@@ -20,8 +21,9 @@ let callback connection result =
   | Result.Ok ({M.command=M.PRIVMSG (target, data); _} as msg) ->
     Lwt_io.printf "Got message: %s\n" (M.to_string msg)
     >>= fun () -> Lwt_io.flush Lwt_io.stdout
-    >>= fun () -> C.send_privmsg ~connection ~target ~message:(ye (String.split_on_char ' ' (String.lowercase_ascii data)))
-    (* >>= fun () -> C.send_privmsg ~connection ~target ~message:("hi") *)
+    >>= fun () -> (match ye (String.split_on_char ' ' (String.lowercase_ascii data)) with
+                   | "" -> Lwt_io.flush Lwt_io.stdout
+                   | _ -> C.send_privmsg ~connection ~target ~message:(ye (String.split_on_char ' ' (String.lowercase_ascii data))))
   | Result.Ok msg ->
     Lwt_io.printf "Got message: %s\n" (M.to_string msg)
     >>= fun () -> Lwt_io.flush Lwt_io.stdout
@@ -34,7 +36,7 @@ let lwt_main =
     ~after:30
     ~connect:(fun () ->
       Lwt_io.printl "Connecting..." >>= fun () ->
-      C.connect_by_name ~server:!host ~port:!port ~nick:!nick ()
+      C.connect_by_name ~server:!host ~port:!port ~username:!nick ~nick:!nick ~realname:!realname ()
     )
     ~f:(fun connection ->
       Lwt_io.printl "Connected" >>= fun () ->
