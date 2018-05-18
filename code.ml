@@ -9,6 +9,8 @@ let nick = ref "emojiirc"
 let realname = ref "🦆"
 let channel = ref "#homescreen"
 let message = "🤣🤣🤣"
+let bot_message = "Reporting in! [OCaml] | For commands, do .commands"
+let commands_message = "emojiirc responds to emoji shortnames, e.g. :duck:. To have emojiirc repeat a line, replacing the shortnames with emojis, do .emoji <your text here>"
 
 let string_list_to_string string_list =
   Printf.sprintf "[%s]" (String.concat "; " string_list)
@@ -21,9 +23,20 @@ let callback connection result =
   | Result.Ok ({M.command=M.PRIVMSG (target, data); _} as msg) ->
     Lwt_io.printf "Got message: %s\n" (M.to_string msg)
     >>= fun () -> Lwt_io.flush Lwt_io.stdout
-    >>= fun () -> (match sl_privmsg (String.split_on_char ' ' (String.lowercase_ascii data)) with
-                   | "" -> Lwt_io.flush Lwt_io.stdout
-                   | _ -> C.send_privmsg ~connection ~target ~message:(sl_privmsg (String.split_on_char ' ' (String.lowercase_ascii data))))
+    >>= fun () -> (match (String.split_on_char ' ' (String.lowercase_ascii data)) with
+                   | hd :: _tl ->
+                     (match hd with
+                      | ".bots" -> C.send_privmsg ~connection ~target ~message:(bot_message)
+                      | ".commands" | ".help" -> C.send_privmsg ~connection ~target ~message:(commands_message)
+                      | ".emoji" -> C.send_privmsg ~connection ~target ~message:(
+                                    match (String.split_on_char ' ' (String.lowercase_ascii data)) with
+                                    | hd :: tl -> in_place_string tl
+                                    | _ -> "")
+                      | _ -> (match sl_privmsg (String.split_on_char ' ' (String.lowercase_ascii data)) with
+                              | "" -> Lwt_io.flush Lwt_io.stdout
+                              | _ -> C.send_privmsg ~connection ~target ~message:(
+                                     sl_privmsg (String.split_on_char ' ' (String.lowercase_ascii data)))))
+                   | _ -> Lwt_io.flush Lwt_io.stdout) 
   | Result.Ok msg ->
     Lwt_io.printf "Got message: %s\n" (M.to_string msg)
     >>= fun () -> Lwt_io.flush Lwt_io.stdout
@@ -56,5 +69,3 @@ let options = Arg.align
 let _ =
   Arg.parse options (fun _ -> ()) "example2 [options]";
   Lwt_main.run lwt_main
-
-(* ocamlfind ocamlopt -package irc-client.lwt -linkpkg code.ml *)
