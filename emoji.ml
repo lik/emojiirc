@@ -4044,5 +4044,5 @@ let return_emoji_list (lst : string list) =
 let return_emoji_string (lst : string list) =
   String.concat " " lst
 
-let ye (lst : string list) =
+let sl_privmsg (lst : string list) =
   return_emoji_string (return_emoji_list (filter_for_emoji lst))

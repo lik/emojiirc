@@ -21,9 +21,9 @@ let callback connection result =
   | Result.Ok ({M.command=M.PRIVMSG (target, data); _} as msg) ->
     Lwt_io.printf "Got message: %s\n" (M.to_string msg)
     >>= fun () -> Lwt_io.flush Lwt_io.stdout
-    >>= fun () -> (match ye (String.split_on_char ' ' (String.lowercase_ascii data)) with
+    >>= fun () -> (match sl_privmsg (String.split_on_char ' ' (String.lowercase_ascii data)) with
                    | "" -> Lwt_io.flush Lwt_io.stdout
-                   | _ -> C.send_privmsg ~connection ~target ~message:(ye (String.split_on_char ' ' (String.lowercase_ascii data))))
+                   | _ -> C.send_privmsg ~connection ~target ~message:(sl_privmsg (String.split_on_char ' ' (String.lowercase_ascii data))))
   | Result.Ok msg ->
     Lwt_io.printf "Got message: %s\n" (M.to_string msg)
     >>= fun () -> Lwt_io.flush Lwt_io.stdout
