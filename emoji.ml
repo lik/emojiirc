@@ -4046,3 +4046,9 @@ let return_emoji_string (lst : string list) =
 
 let sl_privmsg (lst : string list) =
   return_emoji_string (return_emoji_list (filter_for_emoji lst))
+
+let in_place_list (lst : string list) =
+  List.map (fun x -> if (Emojis.mem x m) then (Emojis.find x m) else x) lst
+
+let in_place_string (lst : string list) =
+  return_emoji_string (in_place_list lst)
