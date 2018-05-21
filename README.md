@@ -27,4 +27,3 @@ The emoji list in `emoji.ml` follows the [Unicode 10.0.0](http://unicode.org/ver
  - add more functionality
    - prevent bot from being spammed
    - read password from file
-   - fix case-related stuff
