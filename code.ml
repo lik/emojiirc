@@ -29,7 +29,7 @@ let callback connection result =
                       | ".bots" -> C.send_privmsg ~connection ~target ~message:(bot_message)
                       | ".commands" | ".help" -> C.send_privmsg ~connection ~target ~message:(commands_message)
                       | ".emoji" -> C.send_privmsg ~connection ~target ~message:(
-                                    match (String.split_on_char ' ' (String.lowercase_ascii data)) with
+                                    match (String.split_on_char ' ' data) with
                                     | hd :: tl -> in_place_string tl
                                     | _ -> "")
                       | _ -> (match sl_privmsg (String.split_on_char ' ' (String.lowercase_ascii data)) with
