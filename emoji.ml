@@ -4034,23 +4034,17 @@ let m = Emojis.add ":man_genie:" "🧞‍♂️" m
 let m = Emojis.add ":woman_zombie:" "🧟‍♀️" m
 let m = Emojis.add ":man_zombie:" "🧟‍♂️" m
 
-
-let filter_for_emoji (lst : string list) =
-  List.filter (fun x -> Emojis.mem x m) lst
-
-let return_emoji_list (lst : string list) =
-  List.map (fun x -> Emojis.find x m) lst
-
 let return_emoji_string (lst : string list) =
   String.concat " " lst
 
-let sl_privmsg (lst : string list) =
-  return_emoji_string (return_emoji_list (filter_for_emoji lst))
+let emojify (in_place : bool) (lst : string list)  =
+  match in_place with
+  | true -> List.map (fun x -> if (Emojis.mem (String.lowercase_ascii x) m) then
+                                   (Emojis.find (String.lowercase_ascii x) m)
+                                 else x) lst
+  | false -> List.map (fun x -> if (Emojis.mem (String.lowercase_ascii x) m) then
+                                    (Emojis.find (String.lowercase_ascii x) m)
+                                 else "") lst
 
-let in_place_list (lst : string list) =
-  List.map (fun x -> if (Emojis.mem (String.lowercase_ascii x) m) then
-                       (Emojis.find (String.lowercase_ascii x) m)
-                     else x) lst
-
-let in_place_string (lst : string list) =
-  return_emoji_string (in_place_list lst)
+let emoji_privmsg (in_place: bool) (lst : string list) =
+  return_emoji_string (emojify in_place lst)
