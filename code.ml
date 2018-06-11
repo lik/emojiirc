@@ -24,19 +24,13 @@ let callback connection result =
     Lwt_io.printf "Got message: %s\n" (M.to_string msg)
     >>= fun () -> Lwt_io.flush Lwt_io.stdout
     >>= fun () -> (match (String.split_on_char ' ' (String.lowercase_ascii data)) with
-                   | hd :: _tl ->
+                   | hd :: tl ->
                      (match hd with
                       | ".bots" -> C.send_privmsg ~connection ~target ~message:(bot_message)
                       | ".commands" | ".help" -> C.send_privmsg ~connection ~target ~message:(commands_message)
-                      | ".emoji" -> C.send_privmsg ~connection ~target ~message:(
-                                    match (String.split_on_char ' ' data) with
-                                    | hd :: tl -> emoji_privmsg true tl
-                                    | _ -> "")
-                      | _ -> (match sl_privmsg (String.split_on_char ' ' (String.lowercase_ascii data)) with
-                              | "" -> Lwt_io.flush Lwt_io.stdout
-                              | _ -> C.send_privmsg ~connection ~target ~message:(
-                                     emoji_privmsg false (String.split_on_char ' ' data))))
-                   | _ -> Lwt_io.flush Lwt_io.stdout) 
+                      | ".emoji" -> C.send_privmsg ~connection ~target ~message:(emoji_privmsg true tl)
+                      | _ -> Lwt_io.flush Lwt_io.stdout)
+                   | _ -> C.send_privmsg ~connection ~target ~message:(emoji_privmsg false (String.split_on_char ' ' (String.lowercase_ascii data))))
   | Result.Ok msg ->
     Lwt_io.printf "Got message: %s\n" (M.to_string msg)
     >>= fun () -> Lwt_io.flush Lwt_io.stdout
